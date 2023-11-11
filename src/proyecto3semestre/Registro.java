@@ -5,6 +5,7 @@
 package proyecto3semestre;
 
 import java.sql.*;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Sergio Diaz
@@ -12,14 +13,21 @@ import java.sql.*;
 public class Registro extends javax.swing.JFrame {
     Connection connection;
     ConexionBaseDeDatos conector;
+    Usuario usuarioSesion;
 
     /**
      * Creates new form Registro
      */
-    public Registro(Connection connection) {
+    public Registro(Connection connection, Usuario usuarioSesion) {
         conector= new ConexionBaseDeDatos();
         this.connection= connection;
+        this.usuarioSesion = usuarioSesion;
         initComponents();
+        if(usuarioSesion.getRol().equals("Admin")) {
+            rolCombo.removeItemAt(0);
+        }else if (usuarioSesion.getRol().equals("Usuario")){
+            rolCombo.setEnabled(false);
+        }
         this.setLocationRelativeTo(null);
     }
     public Registro() {
@@ -51,6 +59,8 @@ public class Registro extends javax.swing.JFrame {
         jTextField6 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        rolCombo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,6 +116,12 @@ public class Registro extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel7.setText("Rol");
+
+        rolCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SuperAdmin", "Admin", "Usuario" }));
+        rolCombo.setSelectedIndex(1);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -119,21 +135,22 @@ public class Registro extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(72, 72, 72)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                        .addComponent(apellido)
-                        .addComponent(usuarioText)
-                        .addComponent(contrasena)
-                        .addComponent(jTextField6))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(apellido)
+                    .addComponent(usuarioText)
+                    .addComponent(contrasena)
+                    .addComponent(jTextField6)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rolCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -159,7 +176,11 @@ public class Registro extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(88, 88, 88)
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(rolCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -181,9 +202,22 @@ public class Registro extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Login newframe= new Login();
-        newframe.setVisible(true);
-        this.dispose();
+        if(usuarioSesion.getRol().equals("SuperAdmin")){
+                MenuSuperAdmin menuSuperAdmin = new MenuSuperAdmin();
+                menuSuperAdmin.setUsuarioSesion(usuarioSesion);
+                menuSuperAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Admin")){
+                MenuAdmin menuAdmin = new MenuAdmin();
+                menuAdmin.setUsuarioSesion(usuarioSesion);
+                menuAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Usuario")){
+                MenuUsuario menuUsuario = new MenuUsuario();
+                menuUsuario.setUsuarioSesion(usuarioSesion);
+                menuUsuario.show();
+                this.dispose();
+            }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreKeyTyped
@@ -201,12 +235,14 @@ public class Registro extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        Usuario usuario= new Usuario();
+         Usuario usuario= new Usuario();
         usuario.setNombre(nombre.getText());
         usuario.setApellido(apellido.getText());
         usuario.setUsuario(usuarioText.getText());
         usuario.setContrasena(contrasena.getText());
+        usuario.setRol(rolCombo.getSelectedItem().toString());
         conector.guardar(usuario, connection);
+        JOptionPane.showMessageDialog(this, "El usuario se ha guardado correctamente");
         
     }//GEN-LAST:event_jButton2MouseClicked
 
@@ -255,9 +291,11 @@ public class Registro extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField nombre;
+    private javax.swing.JComboBox<String> rolCombo;
     private javax.swing.JTextField usuarioText;
     // End of variables declaration//GEN-END:variables
 }

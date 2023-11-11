@@ -5,6 +5,7 @@
 package proyecto3semestre;
 
 import java.sql.*;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 /**
  *
@@ -13,14 +14,21 @@ import javax.swing.JOptionPane;
 public class Editar extends javax.swing.JFrame {
     Connection connection;
     ConexionBaseDeDatos conector;
+    Usuario usuarioSesion;
 
     /**
      * Creates new form Registro
      */
-    public Editar(Connection connection) {
+    public Editar(Connection connection, Usuario usuarioSesion) {
         conector = new ConexionBaseDeDatos();
         this.connection= connection;
+        this.usuarioSesion = usuarioSesion;
         initComponents();
+        if(usuarioSesion.getRol().equals("Admin")) {
+            rolCombo.removeItemAt(0);
+        }else if (usuarioSesion.getRol().equals("Usuario")){
+            rolCombo.setEnabled(false);
+        }
         this.setLocationRelativeTo(null);
     }
     public Editar() {
@@ -29,6 +37,14 @@ public class Editar extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
     }
+
+    public void setUsuarioSesion(Usuario usuarioSesion) {
+        this.usuarioSesion = usuarioSesion;
+    }
+
+    
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -53,6 +69,8 @@ public class Editar extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        rolCombo = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,6 +138,13 @@ public class Editar extends javax.swing.JFrame {
             }
         });
 
+        rolCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SuperAdmin", "Admin", "Usuario" }));
+        rolCombo.setSelectedIndex(1);
+        rolCombo.setToolTipText("");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel7.setText("Rol");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -139,7 +164,8 @@ public class Editar extends javax.swing.JFrame {
                                         .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -150,11 +176,12 @@ public class Editar extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(usuarioText, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(usuarioText, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rolCombo, 0, 159, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(128, 128, 128)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,7 +208,11 @@ public class Editar extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(rolCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -203,9 +234,22 @@ public class Editar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Login newframe= new Login();
-        newframe.setVisible(true);
-        this.dispose();
+        if(usuarioSesion.getRol().equals("SuperAdmin")){
+                MenuSuperAdmin menuSuperAdmin = new MenuSuperAdmin();
+                menuSuperAdmin.setUsuarioSesion(usuarioSesion);
+                menuSuperAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Admin")){
+                MenuAdmin menuAdmin = new MenuAdmin();
+                menuAdmin.setUsuarioSesion(usuarioSesion);
+                menuAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Usuario")){
+                MenuUsuario menuUsuario = new MenuUsuario();
+                menuUsuario.setUsuarioSesion(usuarioSesion);
+                menuUsuario.show();
+                this.dispose();
+            }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreKeyTyped
@@ -219,7 +263,7 @@ public class Editar extends javax.swing.JFrame {
     }//GEN-LAST:event_apellidoKeyTyped
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
@@ -228,7 +272,9 @@ public class Editar extends javax.swing.JFrame {
         usuario.setApellido(apellido.getText());
         usuario.setUsuario(usuarioText.getText());
         usuario.setContrasena(contrasena.getText());
+        usuario.setRol(rolCombo.getSelectedItem().toString());
         conector.actualizar(usuario, connection);
+        JOptionPane.showMessageDialog(this, "El usuario se ha guardado correctamente");
         
     }//GEN-LAST:event_jButton2MouseClicked
 
@@ -238,7 +284,7 @@ public class Editar extends javax.swing.JFrame {
             nombre.setText(usuario.getNombre());
             apellido.setText(usuario.getApellido());
             contrasena.setText(usuario.getContrasena());
-            
+            rolCombo.setSelectedItem(usuario.getRol());
         }else{
             JOptionPane.showMessageDialog(this, "Este Usuario no existe");
             
@@ -296,9 +342,11 @@ public class Editar extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField nombre;
+    private javax.swing.JComboBox<String> rolCombo;
     private javax.swing.JTextField usuarioText;
     // End of variables declaration//GEN-END:variables
 }

@@ -13,13 +13,15 @@ import javax.swing.JOptionPane;
 public class Buscar extends javax.swing.JFrame {
     Connection connection;
     ConexionBaseDeDatos conector;
+    Usuario usuarioSesion;
 
     /**
      * Creates new form Registro
      */
-    public Buscar(Connection connection) {
+    public Buscar(Connection connection, Usuario usuarioSesion) {
         conector = new ConexionBaseDeDatos();
         this.connection= connection;
+        this.usuarioSesion = usuarioSesion;
         initComponents();
         nombre.disable();
         apellido.disable();
@@ -160,9 +162,22 @@ public class Buscar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Login newframe= new Login();
-        newframe.setVisible(true);
-        this.dispose();
+        if(usuarioSesion.getRol().equals("SuperAdmin")){
+                MenuSuperAdmin menuSuperAdmin = new MenuSuperAdmin();
+                menuSuperAdmin.setUsuarioSesion(usuarioSesion);
+                menuSuperAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Admin")){
+                MenuAdmin menuAdmin = new MenuAdmin();
+                menuAdmin.setUsuarioSesion(usuarioSesion);
+                menuAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Usuario")){
+                MenuUsuario menuUsuario = new MenuUsuario();
+                menuUsuario.setUsuarioSesion(usuarioSesion);
+                menuUsuario.show();
+                this.dispose();
+            }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreKeyTyped

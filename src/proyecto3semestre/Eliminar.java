@@ -13,13 +13,15 @@ import javax.swing.JOptionPane;
 public class Eliminar extends javax.swing.JFrame {
     Connection connection;
     ConexionBaseDeDatos conector;
+    Usuario usuarioSesion;
 
     /**
      * Creates new form Registro
      */
-    public Eliminar(Connection connection) {
+    public Eliminar(Connection connection, Usuario usuario) {
         conector = new ConexionBaseDeDatos();
         this.connection= connection;
+        this.usuarioSesion = usuario;
         initComponents();
         
         this.setLocationRelativeTo(null);
@@ -119,9 +121,22 @@ public class Eliminar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Login newframe= new Login();
-        newframe.setVisible(true);
-        this.dispose();
+        if(usuarioSesion.getRol().equals("SuperAdmin")){
+                MenuSuperAdmin menuSuperAdmin = new MenuSuperAdmin();
+                menuSuperAdmin.setUsuarioSesion(usuarioSesion);
+                menuSuperAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Admin")){
+                MenuAdmin menuAdmin = new MenuAdmin();
+                menuAdmin.setUsuarioSesion(usuarioSesion);
+                menuAdmin.show();
+                this.dispose();
+            }else if(usuarioSesion.getRol().equals("Usuario")){
+                MenuUsuario menuUsuario = new MenuUsuario();
+                menuUsuario.setUsuarioSesion(usuarioSesion);
+                menuUsuario.show();
+                this.dispose();
+            }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
