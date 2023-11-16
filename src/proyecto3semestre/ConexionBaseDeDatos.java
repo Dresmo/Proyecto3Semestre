@@ -36,8 +36,8 @@ public class ConexionBaseDeDatos {
                     "jdbc:mysql://localhost:3306",
                     "root", "1234567");*/
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://sql10.freemysqlhosting.net:3306",
-                    "sql10659714", "imUKKfT9iI");
+                    "jdbc:mysql://sql5.freemysqlhosting.net:3306",
+                    "sql5661885", "TJtLpFvKyZ");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Prueba.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -48,7 +48,7 @@ public class ConexionBaseDeDatos {
 
     public void guardar(Usuario usuario,Connection connection){
         try {
-            String sql="Insert into sql10659714.usuarios (nombre,apellido,usuario,contrasena,rol) values(?,?,?,?,?)";
+            String sql="Insert into sql5661885.usuarios (nombre,apellido,usuario,contrasena,rol) values(?,?,?,?,?)";
             PreparedStatement ps=connection.prepareStatement(sql);
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getApellido());
@@ -63,7 +63,7 @@ public class ConexionBaseDeDatos {
     
     public void borrar(String usuario, Connection connection){
         try {
-            String sql="delete from sql10659714.usuarios where usuario=?";
+            String sql="delete from sql5661885.usuarios where usuario=?";
             PreparedStatement ps=connection.prepareStatement(sql);
             ps.setString(1, usuario);
             ps.executeUpdate();
@@ -74,7 +74,7 @@ public class ConexionBaseDeDatos {
     
     public void actualizar(Usuario usuario,Connection connection){
         try {
-            String sql="Update sql10659714.usuarios set nombre=?,apellido=?,contrasena=?, rol=? where usuario=?";
+            String sql="Update sql5661885.usuarios set nombre=?,apellido=?,contrasena=?, rol=? where usuario=?";
             PreparedStatement ps=connection.prepareStatement(sql);
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getApellido());
@@ -91,7 +91,7 @@ public class ConexionBaseDeDatos {
         Usuario usuario= null;
         try {
             usuario= new Usuario();
-            String sql="Select * from sql10659714.usuarios where usuario='"+nombreUsuario+"'";
+            String sql="Select * from sql5661885.usuarios where usuario='"+nombreUsuario+"'";
             PreparedStatement ps=connection.prepareStatement(sql);
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
@@ -111,7 +111,7 @@ public class ConexionBaseDeDatos {
         List<Usuario> usuarios= new ArrayList();
         try {
             
-            String sql="Select * from sql10659714.usuarios" ;
+            String sql="Select * from sql5661885.usuarios" ;
             PreparedStatement ps=connection.prepareStatement(sql);
             ResultSet rs=ps.executeQuery();
             while(rs.next()){
@@ -130,7 +130,7 @@ public class ConexionBaseDeDatos {
     }
     public void exportarDatos(Connection connection){
         try {
-            String sql="Select * from sql10659714.usuarios";
+            String sql="Select * from sql5661885.usuarios";
             PreparedStatement ps=connection.prepareStatement(sql);
             ResultSet rs=ps.executeQuery();
             Workbook wb = new Workbook();
